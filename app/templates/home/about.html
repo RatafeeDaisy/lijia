@@ -1,0 +1,182 @@
+﻿{% extends "home/home.html" %}
+
+{% block content %}
+<script type="text/javascript" src="/static/js/echarts.min.js"></script>
+<div id="why1">
+<div class="container">
+            <div id="echart1" style="width: 1200px;height:800px;"> </div>
+            <div id="echart2" style="width: 1200px;height:800px;">
+
+
+            </div>
+        <div id="pie" style="width: 1200px;height:800px;"></div>
+        <div id="plot" style="width: 1200px;height:800px;"></div>
+</div></div>
+
+<script>
+    var chartDom = document.getElementById('echart1');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+  title: {
+    text: '旅游人数最多的景区'
+  },
+  tooltip: {
+    trigger: 'axis'
+  },
+  legend: {},
+  toolbox: {
+    show: true,
+    feature: {
+      dataZoom: {
+        yAxisIndex: 'none'
+      },
+      dataView: { readOnly: false },
+      magicType: { type: ['line', 'bar'] },
+      restore: {},
+      saveAsImage: {}
+    }
+  },
+  xAxis: {
+    type: 'category',
+    boundaryGap: false,
+    data: {{ params.people_max_val|tojson }}
+  },
+  yAxis: {
+    type: 'value'
+  },
+  series: [
+    {
+      name: '旅游人数',
+      type: 'bar',
+      data: {{ params.people_max_num }},
+      markPoint: {
+        data: [
+          { type: 'max', name: 'Max' },
+          { type: 'min', name: 'Min' }
+        ]
+      },
+      markLine: {
+        data: [{ type: 'average', name: 'Avg' }]
+      }
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+var chartDom = document.getElementById('echart2');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+  title: {
+    text: '票价最贵景区'
+  },
+  tooltip: {
+    trigger: 'axis'
+  },
+  legend: {},
+  toolbox: {
+    show: true,
+    feature: {
+      dataZoom: {
+        yAxisIndex: 'none'
+      },
+      dataView: { readOnly: false },
+      magicType: { type: ['line', 'bar'] },
+      restore: {},
+      saveAsImage: {}
+    }
+  },
+  xAxis: {
+    type: 'category',
+    boundaryGap: false,
+    data: {{params.price_max_val|tojson}}
+  },
+  yAxis: {
+    type: 'value'
+  },
+  series: [
+    {
+      name: '票价',
+      type: 'bar',
+      data: {{params.price_max_num}},
+      markPoint: {
+        data: [
+          { type: 'max', name: 'Max' },
+          { type: 'min', name: 'Min' }
+        ]
+      },
+      markLine: {
+        data: [{ type: 'average', name: 'Avg' }]
+      }
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+var chartDom = document.getElementById('pie');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+  title: {
+    text: '不同地区景区售票数量',
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left'
+  },
+  series: [
+    {
+      name: '数量',
+      type: 'pie',
+      radius: '50%',
+      data: [
+                    {% for i in params.cityres %}
+              { value: {{i[1]}}, name: '{{i[0]}}' },
+          {% endfor %}
+
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+var chartDom = document.getElementById('plot');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+    title: {
+    text: '景区价格和票价的关系',
+    left: 'center'
+  },
+  xAxis: {},
+  yAxis: {},
+  series: [
+    {
+      symbolSize: 20,
+      data: {{ params.people_price }},
+      type: 'scatter'
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+</script>
+
+
+{% endblock %}
